@@ -28,9 +28,11 @@ const Image = require('./models/image.js');
 
 app.post('/', upload.single('image'), (req, res) => {
 
+  var filePath = './uploads/' + req.file.filename;
+
   var uploadedImage = new Image({
     img: {
-      data: fs.readFileSync('./uploads/' + req.file.filename),
+      data: fs.readFileSync(filePath),
       imgType: req.file.mimetype
     }
   });
@@ -38,7 +40,8 @@ app.post('/', upload.single('image'), (req, res) => {
   uploadedImage.save(err => {
     if(err) { console.log(err); return; }
     console.log('image saved');
-  })
+    fs.unlinkSync(filePath);
+  });
 });
 
 app.listen(port);
