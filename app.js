@@ -21,7 +21,22 @@ app.engine('.hbs', exphbs({extname: '.hbs'}));
 // set the view engine for your app
 app.set('view engine', '.hbs');
 
-app.get('/', (req, res) => res.render('index.hbs'));
+app.get('/', (req, res) => {
+  // Image.find().lean().exec((err, images) => {
+  //   images.forEach((image) => {
+  //     image.img.data = image.img.data.toString('base64');
+  //   });
+  //   res.render('index.hbs', {images: images});
+  // });
+
+  Image.find((err, images) => {
+    images = images.map((image) => {
+      image.img.data = image.img.data.toString('base64');
+      return image.toObject();
+    });
+    res.render('index.hbs', {images: images});
+  });
+});
 
 const fs = require('fs');
 const Image = require('./models/image.js');
@@ -41,6 +56,7 @@ app.post('/', upload.single('image'), (req, res) => {
     if(err) { console.log(err); return; }
     console.log('image saved');
     fs.unlinkSync(filePath);
+    res.redirect('/');
   });
 });
 

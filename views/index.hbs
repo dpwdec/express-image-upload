@@ -2,3 +2,13 @@
   <input type="file" id="img-upload-input" name="image">
   <input type="submit" value="upload">
 </form>
+
+{{#if images}} 
+  {{#each images as | image |}}
+    {{#with image}}
+      {{#with img}}
+        <img src="data:{{imgType}};base64,{{data}}">
+      {{/with}}
+    {{/with}}
+  {{/each}}
+{{/if}}
